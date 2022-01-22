@@ -31,6 +31,7 @@ export async function getServerSideProps() {
 
 function Form() {
 	const [input, setInput, state] = useState({});
+	const [conversionState, setConversionState] = useState('waiting for conversion');
 
 	const handleChange = (event) => {
 		const name = event.target.name;
@@ -56,14 +57,25 @@ function Form() {
   		});
 		const res = await req.json();
 		console.log(res);
-		return res.state;
+		setConversionState(res.state); // <---- THIS will update conversionState and rerender the component
 	}
-  	return (
-    <form onSubmit={querySearch}>
-      <label htmlFor="yt_link">Past yt link here: </label>
-      <input id="yt_link" name="yt_link" type="text" value={input.yt_link || ""} onChange={handleChange} required/>
-      <button className={utilStyles.button} type="submit">Convert</button>
-    </form>
+	
+	if (conversionState === 'waiting for conversion') {
+	
+		return (
+	    <form onSubmit={querySearch}>
+	      <label htmlFor="yt_link">Past yt link here: </label>
+	      <input id="yt_link" name="yt_link" type="text" value={input.yt_link || ""} onChange={handleChange} required/>
+	      <button className={utilStyles.button} type="submit">Convert</button>
+	    </form>
+	}
+
+	if (conversionState === "conversion done") {
+		return <SomeJSX />
+	}
+		
+	/* etc... */
+
 	)
 }
 
